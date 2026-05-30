@@ -1,0 +1,101 @@
+import java.util.Scanner;
+class Stack {
+String arr[];
+int top;
+int size;
+Stack(int size) {
+this.size = size;
+arr = new String[size];
+top = -1;
+}
+void push(String x) {
+if (top == size - 1) {
+System.out.println("Stack Overflow");
+return;
+}
+arr[++top] = x;
+}
+String pop() {
+if (top == -1) {
+return "EMPTY";
+}
+return arr[top--];
+}
+boolean isEmpty() {
+return top == -1;
+}
+void clear() {
+top = -1;
+}
+}
+
+public class TextEditorUserInput {
+static String text = "";
+public static void main(String[] args) {
+Scanner sc = new Scanner(System.in);
+Stack undoStack = new Stack(100);
+Stack redoStack = new Stack(100);
+int choice;
+do {
+System.out.println("\n--- TEXT EDITOR MENU ---");
+System.out.println("1. Type Text");
+System.out.println("2. Undo");
+System.out.println("3. Redo");
+System.out.println("4. Show Text");
+System.out.println("5. Exit");
+System.out.print("Enter choice: ");
+choice = sc.nextInt();
+sc.nextLine(); // consume newline
+switch (choice) {
+case 1:
+System.out.print("Enter text: ");
+String action = sc.nextLine();
+performAction(action, undoStack, redoStack);
+break;
+case 2:
+undo(undoStack, redoStack);
+break;
+case 3:
+redo(undoStack, redoStack);
+break;
+
+case 4:
+System.out.println("Current Text: " + text);
+break;
+case 5:
+System.out.println("Exiting...");
+break;
+default:
+System.out.println("Invalid choice!");
+}
+} while (choice != 5);
+sc.close();
+}
+static void performAction(String action, Stack undo, Stack redo) {
+text += action;
+undo.push(action);
+redo.clear();
+System.out.println("Text added.");
+}
+static void undo(Stack undo, Stack redo) {
+if (undo.isEmpty()) {
+System.out.println("Nothing to undo");
+return;
+}
+String action = undo.pop();
+text = text.substring(0, text.length() - action.length());
+redo.push(action);
+System.out.println("Undo performed.");
+}
+static void redo(Stack undo, Stack redo) {
+
+if (redo.isEmpty()) {
+System.out.println("Nothing to redo");
+return;
+}
+String action = redo.pop();
+text += action;
+undo.push(action);
+System.out.println("Redo performed.");
+}
+}
